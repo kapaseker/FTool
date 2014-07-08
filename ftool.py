@@ -47,7 +47,6 @@ print("result is ----------------------------------------")
 if isShow:
     for tmpResult in results:
         print(tmpResult)
-del tmpResult
 if isDelet:
     for tmpResults in results:
         try:
