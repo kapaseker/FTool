@@ -1,22 +1,41 @@
 import sys
 import os
 import glob
+import shutil
 from collections import deque
 '''
+c copy
 s show results
 d delete the files
 '''
 print (sys.version)
-params=list(sys.argv[1])
+try:
+    params=list(sys.argv[1])
+    currentPath=sys.argv[2]
+    wildcard=sys.argv[3]
+except Exception as ex:
+    print("you params is less than neccessay")
+    print("param 1 ,operation;")
+    print("param 2 ,direction;")
+    print("param 3 ,wildcar.")
+    sys.exit()
+
 isDelet=False
 isShow=False
+isCopy=False
 
 if params.count("d"):
     isDelet=True
 if params.count("s"):
     isShow=True
-currentPath=sys.argv[2]
-wildcard=sys.argv[3]
+if params.count("c"):
+    isCopy=True
+if isCopy:
+    try:
+       copyPath=sys.argv[4]
+    except Exception as ex:
+        print("you params have not path for copy")
+        sys.exit()
 
 tmpList=deque()
 tmpList.append(currentPath)
@@ -43,10 +62,24 @@ while(len(dirList)>0):
 del tmpDir
 del tmpResults
 
+
+
 print("result is ----------------------------------------")
 if isShow:
     for tmpResult in results:
         print(tmpResult)
+
+if isCopy:
+    if os.path.exists(copyPath)==False:
+        os.mkdir(copyPath)
+    for tmpResults in results:
+        try:
+            shutil.copy(tmpResults,copyPath)
+        except Exception as ex:
+            print("copy file error")
+            print(str(ex))
+print ("copy Done")
+
 if isDelet:
     for tmpResults in results:
         try:
