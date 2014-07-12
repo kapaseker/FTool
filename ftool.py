@@ -1,8 +1,5 @@
+from FileUtil import FileTool
 import sys
-import os
-import glob
-import shutil
-from collections import deque
 '''
 c copy
 s show results
@@ -36,54 +33,15 @@ if isCopy:
     except Exception as ex:
         print("you params have not path for copy")
         sys.exit()
-
-tmpList=deque()
-tmpList.append(currentPath)
-#os.chdir(currentPath)
-#tmpList=deque(os.listdir(currentPath))
-dirList=deque()
-results=[]
-nextList=deque()
-while(len(tmpList)>0):
-    tmpDir=tmpList.popleft()
-    if(os.path.isdir(tmpDir)):
-        os.chdir(tmpDir)
-        dirList.append(tmpDir)
-        nextList=os.listdir(tmpDir)
-        while(len(nextList)>0):
-            tmpList.append(os.getcwd()+os.sep+nextList.pop())
-del tmpDir
-while(len(dirList)>0):
-    tmpDir=dirList.popleft()
-    os.chdir(tmpDir)
-    tmpResults=glob.glob(wildcard)
-    for tmpres in tmpResults:
-        results.append(os.getcwd()+os.sep+tmpres)
-del tmpDir
-del tmpResults
-
-
-
-print("result is ----------------------------------------")
-if isShow:
-    for tmpResult in results:
-        print(tmpResult)
-
-if isCopy:
-    if os.path.exists(copyPath)==False:
-        os.mkdir(copyPath)
-    for tmpResults in results:
-        try:
-            shutil.copy(tmpResults,copyPath)
-        except Exception as ex:
-            print("copy file error")
-            print(str(ex))
-print ("copy Done")
-
-if isDelet:
-    for tmpResults in results:
-        try:
-            os.remove(tmpResults)
-        except Exception as ex:
-            print("delete file error")
-results.clear()
+ftool=FileTool(currentPath,wildcard)
+isGo=ftool.engine()
+if(isGo):
+    if(isShow):
+        ftool.show()
+    if isCopy:
+        ftool.copy(copyPath)
+        print("copy done")
+    if isDelet:
+        ftool.delete()
+else:
+    print("ftool engine faild")
